@@ -1,0 +1,7 @@
+{{ if eq .chezmoi.os "windows" -}}
+[Environment]::SetEnvironmentVariable(
+    "ZELLIJ_CONFIG_DIR",
+    (Join-Path $HOME ".config\zellij"),
+    "User"
+)
+{{ end -}}
