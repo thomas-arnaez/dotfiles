@@ -380,17 +380,6 @@ require("render-markdown").setup({
     },
 })
 
--- Set this before opencode loads its resize handler.
--- Equal bounds disable automatic resizing without capping manual resizing.
-require("opencode.config").setup({
-    ui = {
-        input = {
-            min_height = 0.10,
-            max_height = 0.10,
-        },
-    },
-})
-
 require("opencode").setup({
     preferred_picker = "fzf",
     preferred_completion = "blink",
