@@ -49,6 +49,7 @@ vim.pack.add({
     { src = "https://github.com/NeogitOrg/neogit" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
     { src = "https://github.com/mrjones2014/smart-splits.nvim" },
+	{ src = "https://github.com/smart-splits-nvim/backend-zellij-lua" },
     { src = "https://github.com/folke/lazydev.nvim" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/sudo-tee/opencode.nvim" },
@@ -359,26 +360,50 @@ require("gitsigns").setup({})
 -- Smart Splits
 -- ============================================================
 
-require("smart-splits").setup({
-    multiplexer_integration = "zellij",
-    at_edge = "stop",
-    zellij_move_focus_or_tab = false,
+local smart_splits = require("smart-splits")
+local in_zellij = vim.env.ZELLIJ ~= nil
+
+if in_zellij then
+    require("smart-splits-backend-zellij-lua").setup({
+        move_cursor = {
+            pane_or_tab = false,
+        },
+    })
+end
+
+smart_splits.setup({
+    move = {
+        at_edge = "stop",
+    },
+    resize = {
+        amount = 3,
+    },
+    mux = {
+        backend = in_zellij and "smart-splits-backend-zellij-lua" or nil,
+    },
 })
 
-local smart_splits = require("smart-splits")
-local map_opts = { silent = true }
+-- Normal and terminal mode; preserve native insert-mode keys.
+for key, direction in pairs({
+    h = "left",
+    j = "down",
+    k = "up",
+    l = "right",
+}) do
+    vim.keymap.set(
+        { "n", "t" },
+        "<C-" .. key .. ">",
+        smart_splits["move_cursor_" .. direction],
+        { silent = true, desc = "Focus " .. direction .. " split" }
+    )
 
--- Navigate Neovim windows and Zellij panes.
-vim.keymap.set({ "n", "t" }, "<C-h>", smart_splits.move_cursor_left, map_opts)
-vim.keymap.set({ "n", "t" }, "<C-j>", smart_splits.move_cursor_down, map_opts)
-vim.keymap.set({ "n", "t" }, "<C-k>", smart_splits.move_cursor_up, map_opts)
-vim.keymap.set({ "n", "t" }, "<C-l>", smart_splits.move_cursor_right, map_opts)
-
--- Resize Neovim windows and Zellij panes.
-vim.keymap.set({ "n", "t" }, "<A-h>", smart_splits.resize_left, map_opts)
-vim.keymap.set({ "n", "t" }, "<A-j>", smart_splits.resize_down, map_opts)
-vim.keymap.set({ "n", "t" }, "<A-k>", smart_splits.resize_up, map_opts)
-vim.keymap.set({ "n", "t" }, "<A-l>", smart_splits.resize_right, map_opts)
+    vim.keymap.set(
+        { "n", "t" },
+        "<A-" .. key .. ">",
+        smart_splits["resize_" .. direction],
+        { silent = true, desc = "Resize " .. direction }
+    )
+end
 
 -- ============================================================
 -- OpenCode
