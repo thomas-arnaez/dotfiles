@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -246,7 +248,16 @@ vim.keymap.set("n", "<leader>dt", dap.terminate, {
 -- NvimTree
 -- ============================================================
 
-require("nvim-tree").setup({})
+require("nvim-tree").setup({
+    view = {
+        preserve_window_proportions = true,
+    },
+    actions = {
+        open_file = {
+            resize_window = true,
+        },
+    }
+})
 
 vim.keymap.set(
     "n",
@@ -366,6 +377,17 @@ require("render-markdown").setup({
     file_types = { "markdown", "opencode_output" },
     anti_conceal = {
         enabled = false,
+    },
+})
+
+-- Set this before opencode loads its resize handler.
+-- Equal bounds disable automatic resizing without capping manual resizing.
+require("opencode.config").setup({
+    ui = {
+        input = {
+            min_height = 0.10,
+            max_height = 0.10,
+        },
     },
 })
 
