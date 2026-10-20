@@ -207,10 +207,14 @@ dap.adapters.gdb = {
   type = "executable",
   command = "gdb-multiarch",
   args = {
-    "--quiet",
-    "--nx",
     "--interpreter=dap",
   },
+}
+
+dap.adapters.lldb = {
+	id = "lldb",
+	type = "executable",
+	command = "lldb-gap"
 }
 
 vim.keymap.set("n", "<leader>dc", dap.continue, {
