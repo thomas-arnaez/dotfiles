@@ -47,6 +47,7 @@ vim.pack.add({
 	{ src = "https://github.com/ibhagwan/fzf-lua" },
     { src = "https://github.com/esmuellert/codediff.nvim" },
     { src = "https://github.com/NeogitOrg/neogit" },
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
     { src = "https://github.com/mrjones2014/smart-splits.nvim" },
     { src = "https://github.com/folke/lazydev.nvim" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
@@ -119,7 +120,7 @@ end, {
 
 vim.lsp.config("clangd", {
     cmd = {
-        "/usr/bin/clangd-22",
+		"clangd",
         "--background-index",
         "--clang-tidy"
     },
@@ -343,6 +344,12 @@ vim.keymap.set(
     "<cmd>Neogit<CR>",
     { desc = "Open Neogit" }
 )
+
+-- ============================================================
+-- gitsigns
+-- ============================================================
+
+require("gitsigns").setup({})
 
 -- ============================================================
 -- Smart Splits
