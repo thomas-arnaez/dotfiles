@@ -1,0 +1,12 @@
+{
+  "diffs": {
+    "wrap": "word"
+  },
+  "session": {
+    "sidebar": "hide",
+    "scrollbar": false,
+    "thinking": "hide",
+    "markdown": "source"
+  },
+  "animations": true
+}
