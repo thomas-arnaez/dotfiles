@@ -3,10 +3,6 @@ vim.loader.enable()
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Disable netrw because nvim-tree replaces it
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- ============================================================
 -- Options
 -- ============================================================
@@ -37,11 +33,8 @@ opt.clipboard = "unnamedplus"
 -- ============================================================
 
 vim.pack.add({
-    { src = "https://github.com/nvim-lua/plenary.nvim" },
-    { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
     { src = "https://github.com/catppuccin/nvim" },
     { src = "https://github.com/nvim-tree/nvim-web-devicons" },
-    { src = "https://github.com/nvim-tree/nvim-tree.lua" },
     { src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/ibhagwan/fzf-lua" },
 	{ src=  "https://github.com/dlyongemallo/diffview-plus.nvim" },
@@ -66,22 +59,6 @@ vim.pack.add({
 require("catppuccin").setup({})
 
 vim.cmd.colorscheme("catppuccin")
-
--- ============================================================
--- Treesitter
--- ============================================================
-
-vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("user.treesitter", {
-        clear = true,
-    }),
-
-    pattern = { "c", "cpp", "asm", "lua", "cmake", "make", "rust" },
-
-    callback = function(ev)
-        vim.treesitter.start(ev.buf)
-    end,
-})
 
 -- ============================================================
 -- Diagnostics
@@ -252,28 +229,6 @@ vim.keymap.set("n", "<leader>dr", dap.repl.open, {
 vim.keymap.set("n", "<leader>dt", dap.terminate, {
     desc = "DAP terminate",
 })
-
--- ============================================================
--- NvimTree
--- ============================================================
-
-require("nvim-tree").setup({
-    view = {
-        preserve_window_proportions = true,
-    },
-    actions = {
-        open_file = {
-            resize_window = true,
-        },
-    }
-})
-
-vim.keymap.set(
-    "n",
-    "<leader>e",
-    "<cmd>NvimTreeToggle<CR>",
-    { desc = "Toggle file tree" }
-)
 
 -- ============================================================
 -- FzfLua
