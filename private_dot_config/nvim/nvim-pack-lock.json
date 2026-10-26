@@ -20,6 +20,10 @@
       "rev": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e",
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
+    "diffview-plus.nvim": {
+      "rev": "b297353e82c0390a2ca0c549b1c1acb6802e0c4c",
+      "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
+    },
     "fzf-lua": {
       "rev": "a306c293b37bd7c8c1e8e1e6c0d7d3d9c3de3f21",
       "src": "https://github.com/ibhagwan/fzf-lua"

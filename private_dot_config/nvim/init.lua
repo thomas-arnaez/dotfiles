@@ -45,12 +45,10 @@ vim.pack.add({
     { src = "https://github.com/nvim-tree/nvim-tree.lua" },
     { src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/ibhagwan/fzf-lua" },
-    { src = "https://github.com/esmuellert/codediff.nvim" },
-    { src = "https://github.com/NeogitOrg/neogit" },
+	{ src=  "https://github.com/dlyongemallo/diffview-plus.nvim" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
     { src = "https://github.com/mrjones2014/smart-splits.nvim" },
 	{ src = "https://github.com/smart-splits-nvim/backend-zellij-lua" },
-    { src = "https://github.com/folke/lazydev.nvim" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/sudo-tee/opencode.nvim" },
 	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
@@ -103,19 +101,6 @@ vim.diagnostic.config({
 })
 
 -- ============================================================
--- Formatting
--- ============================================================
-
-vim.keymap.set("n", "<leader>cf", function()
-    vim.lsp.buf.format({
-        name = "clangd",
-        timeout_ms = 2000,
-    })
-end, {
-    desc = "Format C/C++ buffer",
-})
-
--- ============================================================
 -- LSP
 -- ============================================================
 
@@ -146,6 +131,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+        if client and client.name == "clangd" then
+            vim.keymap.set("n", "<leader>cf", function()
+                vim.lsp.buf.format({
+                    bufnr = ev.buf,
+                    id = client.id,
+                    timeout_ms = 2000,
+                })
+            end, {
+                buffer = ev.buf,
+                silent = true,
+                desc = "Format C/C++ buffer",
+            })
+        end
     end,
 })
 
@@ -215,7 +216,7 @@ dap.adapters.gdb = {
 dap.adapters.lldb = {
 	id = "lldb",
 	type = "executable",
-	command = "lldb-gap"
+	command = "lldb-dap"
 }
 
 vim.keymap.set("n", "<leader>dc", dap.continue, {
@@ -276,9 +277,21 @@ vim.keymap.set(
 -- FzfLua
 -- ============================================================
 
-require("fzf-lua").setup({})
-
 local fzf = require("fzf-lua")
+
+fzf.setup({
+	winopts = {
+		on_create = function()
+			vim.keymap.set("t", "<C-y>", "<CR>", {
+				buffer = true,
+				nowait = true,
+				desc = "Accept picker selection",
+			})
+		end,
+	},
+})
+
+fzf.register_ui_select()
 
 vim.keymap.set(
     "n",
@@ -320,35 +333,21 @@ vim.keymap.set(
 -- CodeDiff
 -- ============================================================
 
-require("codediff").setup({})
-
-vim.keymap.set(
-    "n",
-    "<leader>gd",
-    "<cmd>CodeDiff<CR>",
-    { desc = "Open CodeDiff" }
-)
-
-
--- ============================================================
--- Neogit
--- ============================================================
-
-require("neogit").setup({
-    integrations = {
-		fzf_lua = true,
-        codediff = true,
-    },
-
-    diff_viewer = "codediff",
+require("diffview").setup({
+	preferred_adapter = "jj",
+	enhanced_diff_hl = true,
+	use_icons = true,
+	view = {
+		default = { layout = "diff2_horizontal" },
+		merge_tool = { layout = "diff3_horizontal" },
+  	},
+	file_panel = {
+		listing_style = "tree",
+		win_config = { position = "left", width = 35 },
+  	},
+  	hooks = {},
+  	keymaps = {},
 })
-
-vim.keymap.set(
-    "n",
-    "<leader>gg",
-    "<cmd>Neogit<CR>",
-    { desc = "Open Neogit" }
-)
 
 -- ============================================================
 -- gitsigns
@@ -391,14 +390,14 @@ for key, direction in pairs({
     l = "right",
 }) do
     vim.keymap.set(
-        { "n", "t" },
+		"n",
         "<C-" .. key .. ">",
         smart_splits["move_cursor_" .. direction],
         { silent = true, desc = "Focus " .. direction .. " split" }
     )
 
     vim.keymap.set(
-        { "n", "t" },
+		"n",
         "<A-" .. key .. ">",
         smart_splits["resize_" .. direction],
         { silent = true, desc = "Resize " .. direction }

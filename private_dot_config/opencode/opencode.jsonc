@@ -5,6 +5,8 @@
   "autoupdate": "notify",
   "default_agent": "plan",
 
+  "model": "openai/gpt-6-astra",
+
   "permissions": [
     // Fail closed for tools and plugin/MCP actions not explicitly listed.
     { "action": "*", "resource": "*", "effect": "deny" },
