@@ -7,7 +7,6 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-
 -- ============================================================
 -- Options
 -- ============================================================
@@ -50,6 +49,7 @@ vim.pack.add({
     { src = "https://github.com/mrjones2014/smart-splits.nvim" },
 	{ src = "https://github.com/smart-splits-nvim/backend-zellij-lua" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
+	{ src = "https://github.com/igorlfs/nvim-dap-view" },
 	{ src = "https://github.com/sudo-tee/opencode.nvim" },
 	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
 	{ src = "https://github.com/Saghen/blink.lib" },
@@ -204,8 +204,11 @@ blink.setup({
 
 local dap = require("dap")
 
+require("dap-view").setup({
+	auto_toggle = true
+})
+
 dap.adapters.gdb = {
-  id = "gdb",
   type = "executable",
   command = "gdb-multiarch",
   args = {
@@ -214,7 +217,6 @@ dap.adapters.gdb = {
 }
 
 dap.adapters.lldb = {
-	id = "lldb",
 	type = "executable",
 	command = "lldb-dap"
 }
@@ -337,15 +339,36 @@ require("diffview").setup({
 	preferred_adapter = "jj",
 	enhanced_diff_hl = true,
 	use_icons = true,
+
 	view = {
-		default = { layout = "diff2_horizontal" },
-		merge_tool = { layout = "diff3_horizontal" },
+		one_sided_layout = "raw",
+		foldlevel = 99,
+
+		default = { 
+			layout = "diff2_horizontal",
+			winbar_info = true
+		},
+		file_history = {
+			layout = "diff2_horizontal",
+			winbar_info = true,
+		},
+		merge_tool = {
+			layout = "diff3_horizontal",
+			winbar_info = true,
+		},
   	},
+
 	file_panel = {
 		listing_style = "tree",
 		win_config = { position = "left", width = 35 },
   	},
-  	hooks = {},
+
+	hooks = {
+		diff_buf_win_enter = function(_, winid)
+			vim.wo[winid].foldenable = false
+		end,
+	},
+
   	keymaps = {},
 })
 
@@ -424,7 +447,7 @@ require("opencode").setup({
     },
 
     hooks = {
-        on_footer_render = function(segments)
+        on_topbar_render = function(segments)
             local state = require("opencode.state")
             local session = state.active_session
 
@@ -443,7 +466,7 @@ require("opencode").setup({
             local display = vim.fn.fnamemodify(directory, ":~")
 
             table.insert(segments, 1, {
-                " " .. display .. " ",
+                " " .. display .. " │ ",
                 "OpencodeHint",
                 align = "left",
             })
