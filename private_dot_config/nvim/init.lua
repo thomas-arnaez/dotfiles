@@ -43,7 +43,6 @@ vim.pack.add({
 	{ src = "https://github.com/smart-splits-nvim/backend-zellij-lua" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/igorlfs/nvim-dap-view" },
-	{ src = "https://github.com/sudo-tee/opencode.nvim" },
 	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
 	{ src = "https://github.com/Saghen/blink.lib" },
 	{ src = "https://github.com/Saghen/blink.cmp" },
@@ -381,52 +380,3 @@ for key, direction in pairs({
         { silent = true, desc = "Resize " .. direction }
     )
 end
-
--- ============================================================
--- OpenCode
--- ============================================================
---
-require("render-markdown").setup({
-    file_types = { "markdown", "opencode_output" },
-    anti_conceal = {
-        enabled = false,
-    },
-})
-
-require("opencode").setup({
-    preferred_picker = "fzf",
-    preferred_completion = "blink",
-
-    ui = {
-        hide_single_tab = false,
-    },
-
-    hooks = {
-        on_topbar_render = function(segments)
-            local state = require("opencode.state")
-            local session = state.active_session
-
-            local directory
-            if session then
-                directory = (
-                    session.location
-                    and session.location.directory
-                ) or session.directory
-            end
-
-            directory = directory
-                or state.current_cwd
-                or vim.fn.getcwd()
-
-            local display = vim.fn.fnamemodify(directory, ":~")
-
-            table.insert(segments, 1, {
-                " " .. display .. " │ ",
-                "OpencodeHint",
-                align = "left",
-            })
-
-            return segments
-        end,
-    },
-})
