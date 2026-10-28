@@ -33,6 +33,8 @@ opt.clipboard = "unnamedplus"
 -- ============================================================
 
 vim.pack.add({
+	{ src = "https://github.com/nvim-lua/plenary.nvim" },
+	{ src = "https://github.com/mikavilpas/yazi.nvim" },
     { src = "https://github.com/catppuccin/nvim" },
     { src = "https://github.com/nvim-tree/nvim-web-devicons" },
     { src = "https://github.com/neovim/nvim-lspconfig" },
@@ -58,6 +60,16 @@ vim.pack.add({
 require("catppuccin").setup({})
 
 vim.cmd.colorscheme("catppuccin")
+
+-- ============================================================
+-- yazi
+-- ============================================================
+require("yazi").setup({})
+
+-- Open Yazi at the current file
+vim.keymap.set({ "n", "v" }, "<leader>-", "<cmd>Yazi<CR>", {
+  desc = "Open Yazi",
+})
 
 -- ============================================================
 -- Diagnostics
