@@ -36,6 +36,8 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/mikavilpas/yazi.nvim" },
     { src = "https://github.com/catppuccin/nvim" },
+	{ src = "https://github.com/nvim-lua/plenary.nvim" },
+	{ src = "https://github.com/mikavilpas/yazi.nvim" },
     { src = "https://github.com/nvim-tree/nvim-web-devicons" },
     { src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/ibhagwan/fzf-lua" },
